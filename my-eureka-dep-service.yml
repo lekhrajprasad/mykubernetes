@@ -14,7 +14,7 @@ metadata:
   namespace: dev
 spec:
   selector:
-    app: eureka-discovery-service-label
+    app: my-eureka-server
   ports:
     - protocol: TCP
       port: 8762
