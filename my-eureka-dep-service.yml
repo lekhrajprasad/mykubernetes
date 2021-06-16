@@ -1,0 +1,50 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: dev
+  labels:
+    name: dev
+    env: development
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-eureka-discovery-service
+  namespace: dev
+spec:
+  selector:
+    app: eureka-discovery-service-label
+  ports:
+    - protocol: TCP
+      port: 8762
+      targetPort: 8762
+  type: LoadBalancer
+  externalIPs:
+    - 172.31.17.11 #private ip of master node
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-eureka-service-deployment
+  namespace: dev
+  labels:
+    app: my-eureka-server
+    env: development
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: my-eureka-server
+      podlabel: my-eureka-server
+  template:
+    metadata:
+      labels:
+        app: my-eureka-server
+        podlabel: my-eureka-server
+    spec:
+      containers:
+      - name: eureka-server
+        image: lekhrajprasad/my-eureka-server:latest
+        ports:
+        - containerPort: 8762
